@@ -835,7 +835,7 @@ app.post('/api/sync-redis', async (req, res) => {
         const redisPort = parseInt(process.env.REDIS_PORT || '6379');
         const redisPassword = process.env.REDIS_PASSWORD || undefined;
 
-        console.log(`Syncing to Redis at ${redisHost}:${redisPort}...`);
+        console.log(`Syncing ${rows.length} approved clusters to Redis at ${redisHost}:${redisPort}...`);
 
         const redis = new Redis({
             host: redisHost,
@@ -866,6 +866,44 @@ app.post('/api/sync-redis', async (req, res) => {
     } catch (err) {
         console.error('Redis Sync Error:', err);
         res.status(500).json({ error: 'Redis Sync Failed: ' + err.message });
+    }
+});
+
+app.get('/api/sync-redis/verify', async (req, res) => {
+    try {
+        const redisHost = process.env.REDIS_HOST || 'localhost';
+        const redisPort = parseInt(process.env.REDIS_PORT || '6379');
+        const redisPassword = process.env.REDIS_PASSWORD || undefined;
+
+        const redis = new Redis({
+            host: redisHost,
+            port: redisPort,
+            password: redisPassword,
+            connectTimeout: 5000,
+            maxRetriesPerRequest: 1,
+            retryStrategy: () => null
+        });
+
+        redis.on('error', (err) => console.error('Redis Verify Error:', err.message));
+
+        const data = await redis.get('synonyms_dictionary');
+        await redis.quit();
+
+        if (!data) {
+            return res.json({ success: false, message: 'No dictionary found in Redis. Try syncing first.' });
+        }
+
+        const parsed = JSON.parse(data);
+        const keys = Object.keys(parsed);
+        
+        res.json({ 
+            success: true, 
+            keyCount: keys.length,
+            sample: keys.slice(0, 3),
+            timestamp: new Date().toISOString()
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Redis Verification Failed: ' + err.message });
     }
 });
 

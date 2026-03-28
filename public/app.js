@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const historySearch = document.getElementById('history-search');
     const btnDoExport = document.getElementById('btn-do-export');
     const btnSyncRedis = document.getElementById('btn-sync-redis');
+    const btnVerifyRedis = document.getElementById('btn-verify-redis');
 
     // ─── INIT ──────────────────────────────────────────────
     updateMetrics();
