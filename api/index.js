@@ -8,6 +8,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { GoogleGenAI } = require('@google/genai');
 const dotenv = require('dotenv');
 const xlsx = require('xlsx');
+const Redis = require('ioredis');
 
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config({ path: path.join(__dirname, '..', '.env') });
@@ -20,10 +21,10 @@ app.use(cors());
 // Increase payload limit for massive term pastes
 app.use(express.json({ limit: '50mb' }));
 app.use(fileUpload());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// GLOBAL DB MIDDLEWARE: Ensure connection is ready before routing
-app.use(async (req, res, next) => {
+// GLOBAL DB MIDDLEWARE: Ensure connection is ready before routing API calls
+app.use('/api', async (req, res, next) => {
     try {
         await connectDB();
         next();
@@ -41,26 +42,30 @@ const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_API_KEY });
 // AUTH: Gemini (Vertex AI - Unified SDK)
 let genaiClient;
 try {
-    const credsPath = path.join(__dirname, '..', 'data', 'creds.json');
-    let credentials;
-    if (process.env.GOOGLE_CREDS_JSON) {
-        credentials = JSON.parse(process.env.GOOGLE_CREDS_JSON);
-    } else if (fs.existsSync(credsPath)) {
-        credentials = require(credsPath);
-    }
-
-    if (credentials) {
-        // AUTH: Service Account (Vertex AI mode)
-        genaiClient = new GoogleGenAI({
-            apiKey: credentials.private_key, // Service account private key is treated as the secret
-            project: credentials.project_id,
-            location: 'us-central1'
-        });
-        console.log('Gemini initialized with Service Account (Vertex AI).');
-    } else if (process.env.GEMINI_API_KEY) {
-        // AUTH: API Key (Standalone mode)
+    if (process.env.GEMINI_API_KEY) {
+        // AUTH: API Key (Standalone mode / Google AI Studio)
+        // MUST use string constructor to avoid "mutually exclusive" error with Vertex parameters
         genaiClient = new GoogleGenAI(process.env.GEMINI_API_KEY);
-        console.log('Gemini initialized with API Key fallback.');
+        console.log('Gemini initialized with API Key string.');
+    } else {
+        const credsPath = path.join(__dirname, '..', 'data', 'creds.json');
+        let credentials;
+        if (process.env.GOOGLE_CREDS_JSON) {
+            credentials = JSON.parse(process.env.GOOGLE_CREDS_JSON);
+        } else if (fs.existsSync(credsPath)) {
+            credentials = require(credsPath);
+        }
+
+        if (credentials) {
+            // AUTH: Service Account (Vertex AI mode)
+            // For @google/genai, Vertex mode is triggered by project/location.
+            // Authentication is usually handled via ADC or credentials object.
+            genaiClient = new GoogleGenAI({
+                project: credentials.project_id,
+                location: 'us-central1'
+            });
+            console.log('Gemini initialized with Service Account (Vertex AI).');
+        }
     }
 } catch (e) {
     console.warn('Gemini init failed:', e.message);
@@ -479,10 +484,10 @@ async function callClaudeBatch(terms, promptBase, fieldName) {
 
 async function callGeminiBatch(terms, promptBase, fieldName) {
     const prompt = buildBatchPrompt(promptBase, terms, fieldName);
-    
+
     // Unified Gen AI SDK (Vertex Mode)
     const result = await genaiClient.models.generateContent({
-        model: "gemini-3-flash",
+        model: "gemini-3-flash-preview",
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: {
             systemInstruction: "You are an expert in Indian ecommerce search behavior. Return ONLY raw JSON. No markdown, no code blocks, no extra text."
@@ -514,7 +519,7 @@ async function callGeminiBatch(terms, promptBase, fieldName) {
 function normalizePTypes(rawLines) {
     const exclusionWords = ['piece', 'kit', 'set', 'experiment', 'pack', 'color', 'pretend play', 'activity', 'doodle', 'magic'];
     const conceptMap = new Map(); // key -> { canonical, variations: Set }
-    
+
     for (const line of rawLines) {
         let trimmed = line.trim();
         if (!trimmed) continue;
@@ -524,14 +529,14 @@ function normalizePTypes(rawLines) {
         if (lower.split(/\s+/).length > 3 && exclusionWords.some(ex => lower.includes(ex))) continue;
 
         const key = lower.replace(/[\s\-\_\/]+/g, '');
-        
+
         if (!conceptMap.has(key)) {
             conceptMap.set(key, { canonical: trimmed, variations: new Set([trimmed]) });
         } else {
             conceptMap.get(key).variations.add(trimmed);
         }
     }
-    
+
     // Return objects: { product_type: "play mat", variations: ["play mat", "playmat"] }
     return Array.from(conceptMap.values()).map(c => ({
         product_type: c.canonical,
@@ -575,7 +580,7 @@ function mergeResults(terms, synResult, regResult, source) {
 // ─────────────────────────────────────────────────────────
 
 app.get('/api/metrics', async (req, res) => {
-    try { 
+    try {
         const stats = await getMetrics();
         const counts = await getSynonymCounts();
         res.json({ ...stats, ...counts });
@@ -614,7 +619,7 @@ app.get('/api/drafts', async (req, res) => {
 app.post('/api/approve', async (req, res) => {
     const { product_type, synonyms, regional_variations, cluster_terms, source, variations } = req.body;
     const targets = (variations && variations.length > 0) ? variations : [product_type];
-    
+
     try {
         const promises = targets.map(target => {
             const finalCluster = Array.from(new Set([target.toLowerCase(), ...cluster_terms]));
@@ -643,7 +648,7 @@ app.post('/api/approve', async (req, res) => {
 app.post('/api/jobs', async (req, res) => {
     const { type, terms, model } = req.body;
     const jobId = Date.now().toString() + Math.random().toString().substring(2, 6);
-    
+
     try {
         await Job.create({
             job_id: jobId,
@@ -661,11 +666,11 @@ app.post('/api/jobs', async (req, res) => {
 // SSE Streaming Execution
 app.get('/api/jobs/:id/stream', async (req, res) => {
     const jobId = req.params.id;
-    
+
     try {
         const job = await Job.findOne({ job_id: jobId });
         if (!job) return res.status(404).send('Job not found in DB');
-        
+
         // Delete job to prevent re-execution or duplicate streaming
         await Job.deleteOne({ job_id: jobId });
 
@@ -704,7 +709,7 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
         // 3. Check Cache
         const canonicalTerms = allCanonical.map(c => c.product_type);
         const { existing, missing: pendingCanonical } = await splitByCache(canonicalTerms);
-        
+
         let processed = existing.length;
         let total = allCanonical.length;
 
@@ -760,7 +765,7 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
                 await updateMetrics(inputTokens, outputTokens, 2, job.model);
 
                 const results = mergeResults(batch, synResult, regResult, job.mode);
-                
+
                 results.forEach(item => {
                     item.variations = conceptDataMap.get(item.product_type) || [item.product_type];
                 });
@@ -784,13 +789,13 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
                         );
                     }
                 }
-                
+
                 processed += batch.length;
                 send('batch_result', { results, tokens: (inputTokens + outputTokens), done: processed, total });
             } catch (batchErr) {
                 console.error(batchErr);
                 send('batch_error', { terms: batch, message: batchErr.message, done: processed, total });
-                processed += batch.length; 
+                processed += batch.length;
             }
         }
 
@@ -809,6 +814,55 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
     }
 });
 
+app.post('/api/sync-redis', async (req, res) => {
+    try {
+        const rows = await Cluster.find({ status: 'approved' });
+        
+        // Format for Algolia or general search usage: 
+        // Map of product_type -> array of synonyms
+        const dictionary = {};
+        rows.forEach(r => {
+            // Include synonyms and regional variations
+            const allSyns = [...new Set([
+                ...(r.synonyms || []),
+                ...(r.regional_variations || [])
+            ])];
+            dictionary[r.product_type] = allSyns;
+        });
+
+        // Use a one-off connection for the sync to ensure it works across different environments
+        const redisHost = process.env.REDIS_HOST || 'localhost';
+        const redisPort = parseInt(process.env.REDIS_PORT || '6379');
+        const redisPassword = process.env.REDIS_PASSWORD || undefined;
+
+        console.log(`Syncing to Redis at ${redisHost}:${redisPort}...`);
+
+        const redis = new Redis({
+            host: redisHost,
+            port: redisPort,
+            password: redisPassword,
+            connectTimeout: 5000,
+            maxRetriesPerRequest: 1
+        });
+
+        // Set the aggregated dictionary
+        await redis.set('synonyms_dictionary', JSON.stringify(dictionary));
+        
+        const pipeline = redis.pipeline();
+        for (const [ptype, syns] of Object.entries(dictionary)) {
+            pipeline.set(`synonym:${ptype.toLowerCase().replace(/\s+/g, '_')}`, JSON.stringify(syns));
+        }
+        await pipeline.exec();
+
+        await redis.quit();
+
+        res.json({ success: true, count: rows.length });
+    } catch (err) {
+        console.error('Redis Sync Error:', err);
+        res.status(500).json({ error: 'Redis Sync Failed: ' + err.message });
+    }
+});
+
 // ─────────────────────────────────────────────────────────
 // EXPORTS
 // ─────────────────────────────────────────────────────────
@@ -816,7 +870,7 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
 app.get('/api/export', async (req, res) => {
     const { format, scope, expand } = req.query;
     const shouldExpand = expand === 'true';
-    
+
     try {
         let filter = {};
         if (scope === 'approved') filter.status = 'approved';
@@ -831,7 +885,7 @@ app.get('/api/export', async (req, res) => {
                 const syns = r.synonyms || [];
                 const regs = r.regional_variations || [];
                 const allTerms = [...new Set([...syns, ...regs])];
-                
+
                 if (allTerms.length === 0) {
                     exportData.push(r);
                 } else {
@@ -848,10 +902,10 @@ app.get('/api/export', async (req, res) => {
         }
 
         if (format === 'txt') {
-            let content = shouldExpand 
+            let content = shouldExpand
                 ? 'Product Type | Synonym/Variation | Status | Generator\n' + '='.repeat(80) + '\n'
                 : 'Product Type | Cluster Terms | Status | Generator\n' + '='.repeat(90) + '\n';
-                
+
             exportData.forEach(r => {
                 if (shouldExpand) {
                     content += `${r.product_type.padEnd(25)} | ${r.synonym_term.padEnd(25)} | ${r.status.padEnd(8)} | ${r.llm || 'Claude'}\n`;
@@ -862,6 +916,26 @@ app.get('/api/export', async (req, res) => {
             });
             res.setHeader('Content-Disposition', `attachment; filename=${filename}.txt`);
             res.type('text/plain').send(content);
+        } else if (format === 'json') {
+            const jsonData = exportData.map((r, i) => {
+                const syns = r.synonyms || [];
+                const regs = r.regional_variations || [];
+                // Algolia synonyms are a single array including the product type
+                const allTerms = [...new Set([r.product_type, ...syns, ...regs])];
+
+                return {
+                    objectID: `syn-${i}`,
+                    type: 'synonym',
+                    synonyms: allTerms
+                };
+            });
+
+            if (req.query.preview === 'true') {
+                return res.json(jsonData);
+            }
+
+            res.setHeader('Content-Disposition', `attachment; filename=${filename}.json`);
+            res.json(jsonData);
         } else {
             const excelRows = exportData.map(r => {
                 if (shouldExpand) {

@@ -25,7 +25,7 @@
   --badge-reg-text: #3f3f46;
   --badge-reg-border: #d4d4d8;
 
-  --sidebar-w: 240px;
+  --sidebar-w: 300px;
   --sidebar-cw: 64px;
   --shadow: 0 4px 6px -1px rgba(0,0,0,.03), 0 2px 4px -2px rgba(0,0,0,.03);
 }
@@ -255,3 +255,222 @@ tr:hover td { background: #fafafa; }
 
 
 
+/* ════════════════ GLASSMORPHISM & ENHANCEMENTS ════════════════ */
+.glass-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px) saturate(180%);
+    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin: 1.5rem auto 2.5rem;
+    width: fit-content;
+    font-size: 0.9rem;
+}
+
+.glass-badge-icon {
+    display: flex;
+    align-items: center;
+    color: var(--primary);
+}
+
+.glass-badge-content {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.glass-badge-content .label {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.glass-badge-content .name {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.glass-badge-link {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    margin-left: 0.5rem;
+    padding: 2px 4px;
+}
+
+.glass-badge-link:hover {
+    color: var(--primary-h);
+}
+
+/* Input Guidance Animation */
+.input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 0.75rem;
+}
+
+/* Smart Insight Component */
+.smart-insight {
+    background: rgba(9, 9, 11, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    max-width: 600px;
+    transition: all 0.3s ease;
+}
+
+.insight-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.insight-icon { 
+    display: flex;
+    align-items: center;
+    color: var(--text);
+    opacity: 0.8;
+}
+.insight-title { 
+    font-size: 0.72rem; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    letter-spacing: 0.1em; 
+    color: var(--muted); 
+}
+
+.efficiency-dots {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.dot {
+    width: 20px;
+    height: 6px;
+    background: #e4e4e7;
+    border-radius: 999px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dot.active {
+    background: var(--text);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.dot.full {
+    background: #000;
+}
+
+.insight-content {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.insight-content strong { color: var(--text); font-weight: 600; }
+
+/* Glass Modal */
+.glass-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glass-modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.glass-modal {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    animation: modal-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.modal-header h3 { font-size: 1.25rem; font-weight: 700; }
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: #f8f9fa;
+    flex: 1;
+}
+
+.modal-body pre {
+    font-family: 'JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #1a1a1b;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Card Model Attribution */
+.cluster-card { position: relative; }
+
+.model-tag {
+    position: absolute;
+    top: -10px;
+    right: 12px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.model-tag.claude { background: #f4f4f5; color: #18181b; border: 1px solid #d4d4d8; }
+.model-tag.gemini { background: #09090b; color: #fff; border: 1px solid #27272a; }

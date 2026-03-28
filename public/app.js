@@ -40,9 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const draftsCards = document.getElementById('drafts-cards');
     const draftsEmpty = document.getElementById('drafts-empty');
+    const draftsSearch = document.getElementById('drafts-search');
 
     const historySearch = document.getElementById('history-search');
     const btnDoExport = document.getElementById('btn-do-export');
+    const btnSyncRedis = document.getElementById('btn-sync-redis');
 
     // ─── INIT ──────────────────────────────────────────────
     updateMetrics();
@@ -112,6 +114,71 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.warn("Metrics suppressed", e); }
     }
 
+    // ─── MODEL SYNC ───────────────────────────────────────────
+    function syncModelBadges() {
+        const activeRadio = document.querySelector('input[name="llm-model"]:checked');
+        if (!activeRadio) return;
+        
+        const modelName = activeRadio.value === 'claude' ? 'Claude 3.5 Haiku' : 'Gemini 3 Flash';
+        
+        const customLabel = document.getElementById('active-model-name-custom');
+        const indexLabel = document.getElementById('active-model-name-index');
+        
+        if (customLabel) customLabel.textContent = modelName;
+        if (indexLabel) indexLabel.textContent = modelName;
+    }
+
+    window._switchToSettings = () => switchView('view-settings');
+
+    // ─── GHOST TYPING ANIMATION ──────────────────────────────
+    function initGhostTyping() {
+        const ta = document.getElementById('custom-terms');
+        if (!ta) return;
+        
+        const examples = [
+            'feeding bottle\nbaby carrier\nwooden crib',
+            'lunch box\nwater bottle\nbag',
+            't-shirt\nshorts\nsocks',
+            'term1\nterm2\nterm3'
+        ];
+        
+        let exIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
+        let typeSpeed = 100;
+
+        function type() {
+            const currentEx = examples[exIdx];
+            
+            if (isDeleting) {
+                ta.placeholder = currentEx.substring(0, charIdx--);
+                typeSpeed = 50;
+            } else {
+                ta.placeholder = currentEx.substring(0, charIdx++);
+                typeSpeed = 100;
+            }
+
+            if (!isDeleting && charIdx === currentEx.length + 1) {
+                isDeleting = true;
+                typeSpeed = 2000; // Pause at end
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                exIdx = (exIdx + 1) % examples.length;
+                typeSpeed = 500; // Pause at start
+            }
+
+            // Only run if the textarea is empty and blurred
+            if (ta.value === '' && document.activeElement !== ta) {
+                setTimeout(type, typeSpeed);
+            } else {
+                // If user starts typing or focused, reset but keep monitoring
+                setTimeout(type, 2000);
+            }
+        }
+        
+        type();
+    }
+
     // ─── TOASTS ───────────────────────────────────────────
     function showToast(message, type = 'success') {
         const container = document.getElementById('toast-container');
@@ -138,11 +205,61 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('input[name="llm-model"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
             if (e.target.checked) {
-                const name = e.target.value === 'claude' ? 'Claude 3.5 Haiku' : 'Gemini 1.5 Flash';
+                const name = e.target.value === 'claude' ? 'Claude 3.5 Haiku' : 'Gemini 3 Flash';
                 showToast(`Switched to ${name} generator`, 'success');
+                syncModelBadges();
             }
         });
     });
+
+    syncModelBadges();
+    initGhostTyping();
+
+    // ─── EFFICIENCY METER ──────────────────────────────────
+    const customTermsTa = document.getElementById('custom-terms');
+    function updateEfficiency() {
+        if (!customTermsTa) return;
+        const text = customTermsTa.value.trim();
+        const terms = text ? text.split('\n').filter(t => t.trim().length > 0) : [];
+        const count = terms.length;
+        
+        const dots = document.querySelectorAll('#efficiency-dots .dot');
+        const insightText = document.getElementById('insight-text');
+        
+        if (dots.length === 0 || !insightText) return;
+
+        if (count === 0) {
+            dots.forEach(d => d.classList.remove('active', 'full'));
+            insightText.innerHTML = 'To ensure peak performance, we process terms in optimized batches of 6 per API request. Full batches maximize throughput and reduce overhead.';
+            return;
+        }
+
+        const currentBatchPos = count % 6 === 0 ? 6 : count % 6;
+        const batchNum = Math.ceil(count / 6);
+
+        dots.forEach((dot, i) => {
+            if (i < currentBatchPos) {
+                dot.classList.add('active');
+                if (currentBatchPos === 6) dot.classList.add('full');
+                else dot.classList.remove('full');
+            } else {
+                dot.classList.remove('active', 'full');
+            }
+        });
+
+        if (currentBatchPos === 6) {
+            insightText.innerHTML = `✨ <strong>Batch ${batchNum} Optimized.</strong> You have ${count} terms. Batch slots are 100% utilized for maximum performance.`;
+        } else {
+            const remaining = 6 - currentBatchPos;
+            insightText.innerHTML = `Batch ${batchNum}: <strong>${currentBatchPos}/6</strong> slots utilized. Adding <strong>${remaining}</strong> more terms will complete this processing unit.`;
+        }
+    }
+
+    if (customTermsTa) {
+        customTermsTa.addEventListener('input', updateEfficiency);
+        // Also update when user clicks/focuses to clear ghost typing
+        customTermsTa.addEventListener('focus', updateEfficiency);
+    }
 
     // ─── FILE UPLOAD TRANSLATOR ────────────────────────────
     fileUpload.addEventListener('change', (e) => {
@@ -308,6 +425,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.className = 'cluster-card';
 
+        const modelClass = (item.llm || '').toLowerCase().includes('gemini') ? 'gemini' : 'claude';
+        const modelLabel = item.llm || (modelClass === 'gemini' ? 'Gemini 3 Flash' : 'Claude 3.5 Haiku');
+        const modelBadge = `<div class="model-tag ${modelClass}">${modelLabel}</div>`;
+
         const renderTags = (arr, type) => arr.map((t, i) =>
             `<span class="tag ${type}">
                 <span class="tag-text" contenteditable="true" 
@@ -327,6 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         card.innerHTML = `
             <div>
+                ${modelBadge}
                 <h4>${item.product_type}</h4>
                 ${variationsHtml}
                 <div class="tag-group">
@@ -555,9 +677,15 @@ document.addEventListener('DOMContentLoaded', () => {
             : '';
 
         const isHistory = oldCard.__isHistory || false;
+        const card = document.createElement('div');
+        card.className = 'cluster-card';
+        card.__item = item;
+        card.__container = container;
+        card.__isHistory = isHistory;
 
         card.innerHTML = `
             <div>
+                ${modelBadge}
                 <h4>${item.product_type}</h4>
                 ${variationsHtml}
                 <div class="tag-group">
@@ -596,24 +724,40 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadDrafts() {
         try {
             draftsData = await fetch('/api/drafts').then(r => r.json());
-            draftsCards.innerHTML = '';
-            if (!draftsData.length) { 
-                draftsEmpty.style.display = 'block'; 
-                return; 
-            }
-            draftsEmpty.style.display = 'none';
-            
-            // Format DB rows back into object structure
-            draftsData.forEach(row => {
-                appendCard({
-                    product_type: row.product_type,
-                    synonyms: Array.isArray(row.synonyms) ? row.synonyms : (typeof row.synonyms === 'string' ? JSON.parse(row.synonyms) : []),
-                    regional_variations: Array.isArray(row.regional_variations) ? row.regional_variations : (typeof row.regional_variations === 'string' ? JSON.parse(row.regional_variations) : []),
-                    source: row.source
-                }, draftsCards, false);
-            });
+            renderDrafts(draftsData);
         } catch (e) { /* silent */ }
     }
+
+    function renderDrafts(data) {
+        draftsCards.innerHTML = '';
+        if (!data.length) { 
+            draftsEmpty.style.display = 'block'; 
+            return; 
+        }
+        draftsEmpty.style.display = 'none';
+        
+        data.forEach(row => {
+            appendCard({
+                product_type: row.product_type,
+                synonyms: Array.isArray(row.synonyms) ? row.synonyms : (typeof row.synonyms === 'string' ? JSON.parse(row.synonyms) : []),
+                regional_variations: Array.isArray(row.regional_variations) ? row.regional_variations : (typeof row.regional_variations === 'string' ? JSON.parse(row.regional_variations) : []),
+                source: row.source,
+                llm: row.llm,
+                variations: row.variations || [row.product_type]
+            }, draftsCards, false);
+        });
+    }
+
+    draftsSearch.addEventListener('input', () => {
+        const q = draftsSearch.value.toLowerCase();
+        renderDrafts(draftsData.filter(r => {
+            const arrSyn = Array.isArray(r.synonyms) ? r.synonyms : (typeof r.synonyms === 'string' ? JSON.parse(r.synonyms) : []);
+            const arrReg = Array.isArray(r.regional_variations) ? r.regional_variations : (typeof r.regional_variations === 'string' ? JSON.parse(r.regional_variations) : []);
+            const s = arrSyn.join(' ').toLowerCase();
+            const v = arrReg.join(' ').toLowerCase();
+            return r.product_type.toLowerCase().includes(q) || s.includes(q) || v.includes(q);
+        }));
+    });
 
 
     // ─── HISTORY ───────────────────────────────────────────
@@ -637,7 +781,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 synonyms: typeof row.synonyms === 'string' ? JSON.parse(row.synonyms) : row.synonyms,
                 regional_variations: typeof row.regional_variations === 'string' ? JSON.parse(row.regional_variations) : row.regional_variations,
                 variations: [row.product_type], // default for history
-                source: row.source
+                source: row.source,
+                llm: row.llm
             }, hc, false, true);
         });
     }
@@ -653,7 +798,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
     });
 
+    // ─── REDIS SYNC ───────────────────────────────────────────
+    if (btnSyncRedis) {
+        btnSyncRedis.addEventListener('click', async () => {
+            const conf = confirm("This will push all approved synonyms to GCP Memorystore (Redis). Proceed?");
+            if (!conf) return;
+
+            btnSyncRedis.disabled = true;
+            const originalHtml = btnSyncRedis.innerHTML;
+            btnSyncRedis.innerHTML = 'Syncing...';
+
+            try {
+                const res = await fetch('/api/sync-redis', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Successfully synced ${data.count} clusters to Redis`, 'success');
+                } else {
+                    showToast('Sync failed: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (e) {
+                showToast('Network error during Redis sync.', 'error');
+            } finally {
+                btnSyncRedis.disabled = false;
+                btnSyncRedis.innerHTML = originalHtml;
+            }
+        });
+    }
+
     // ─── EXPORT ────────────────────────────────────────────
+    const btnPreviewExport = document.getElementById('btn-preview-export');
+    const modalPreview = document.getElementById('modal-preview');
+    const previewContent = document.getElementById('preview-content');
+    const previewFilename = document.getElementById('preview-filename');
+    const btnCopyPreview = document.getElementById('btn-copy-preview');
+
     btnDoExport.addEventListener('click', () => {
         const scope = document.getElementById('export-scope').value;
         const format = document.querySelector('input[name="export-format"]:checked').value;
@@ -661,5 +839,52 @@ document.addEventListener('DOMContentLoaded', () => {
         
         showToast(`Generating ${format.toUpperCase()} export...`, 'success');
         window.location.href = `/api/export?format=${format}&scope=${scope}&expand=${expand}`;
+    });
+
+    btnPreviewExport.addEventListener('click', async () => {
+        const scope = document.getElementById('export-scope').value;
+        const format = document.querySelector('input[name="export-format"]:checked').value;
+        const expand = document.getElementById('export-expand').checked;
+
+        if (format === 'xlsx') {
+            showToast("Preview is not available for Excel format. Please download to view.", "error");
+            return;
+        }
+
+        btnPreviewExport.disabled = true;
+        btnPreviewExport.innerHTML = '<span class="loading-spinner"></span> Loading...';
+
+        try {
+            const url = `/api/export?format=${format}&scope=${scope}&expand=${expand}&preview=true`;
+            const res = await fetch(url);
+            const data = await res.text();
+            
+            previewContent.textContent = format === 'json' ? JSON.stringify(JSON.parse(data), null, 4) : data;
+            previewFilename.textContent = `synonyms_${scope}_preview.${format}`;
+            
+            modalPreview.classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        } catch (e) {
+            showToast("Failed to generate preview", "error");
+        } finally {
+            btnPreviewExport.disabled = false;
+            btnPreviewExport.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Preview Output`;
+        }
+    });
+
+    window._closePreview = () => {
+        modalPreview.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    btnCopyPreview.addEventListener('click', () => {
+        navigator.clipboard.writeText(previewContent.textContent);
+        const originalText = btnCopyPreview.textContent;
+        btnCopyPreview.textContent = '✓ Copied!';
+        btnCopyPreview.classList.replace('btn-secondary', 'btn-primary');
+        setTimeout(() => {
+            btnCopyPreview.textContent = originalText;
+            btnCopyPreview.classList.replace('btn-primary', 'btn-secondary');
+        }, 2000);
     });
 });
