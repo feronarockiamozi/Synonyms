@@ -34,7 +34,7 @@ app.use('/api', async (req, res, next) => {
     }
 });
 
-const PORT = process.env.MANAGER_PORT || 4001;
+const PORT = process.env.PORT || process.env.MANAGER_PORT || 4001;
 
 // AUTH: Claude
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_API_KEY });

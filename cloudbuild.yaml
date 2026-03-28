@@ -1,0 +1,31 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia-south2-docker.pkg.dev/$PROJECT_ID/synonyms-repo/synonyms-app:$COMMIT_SHA', '.']
+
+  # Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-south2-docker.pkg.dev/$PROJECT_ID/synonyms-repo/synonyms-app:$COMMIT_SHA']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'synonyms-app'
+      - '--image'
+      - 'asia-south2-docker.pkg.dev/$PROJECT_ID/synonyms-repo/synonyms-app:$COMMIT_SHA'
+      - '--region'
+      - 'asia-south2'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--vpc-connector'
+      - 'synonyms-connector'
+      # Note: We don't hardcode sensitive env vars here. 
+      # They should be set in the Cloud Run console once.
+      # Subsequent "gcloud run deploy" will preserve them unless changed.
+
+options:
+  logging: CLOUD_LOGGING_ONLY
