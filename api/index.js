@@ -842,7 +842,13 @@ app.post('/api/sync-redis', async (req, res) => {
             port: redisPort,
             password: redisPassword,
             connectTimeout: 5000,
-            maxRetriesPerRequest: 1
+            maxRetriesPerRequest: 1,
+            retryStrategy: () => null // Do not retry if connection fails once
+        });
+
+        // Add an error handler to prevent "Unhandled error event" logs
+        redis.on('error', (err) => {
+            console.error('Redis Connection Error:', err.message);
         });
 
         // Set the aggregated dictionary
