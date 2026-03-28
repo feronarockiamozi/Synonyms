@@ -907,6 +907,50 @@ app.get('/api/sync-redis/verify', async (req, res) => {
     }
 });
 
+app.get('/api/redis/stats', async (req, res) => {
+    try {
+        const redisHost = process.env.REDIS_HOST || 'localhost';
+        const redisPort = parseInt(process.env.REDIS_PORT || '6379');
+        const redisPassword = process.env.REDIS_PASSWORD || undefined;
+
+        const redis = new Redis({
+            host: redisHost,
+            port: redisPort,
+            password: redisPassword,
+            connectTimeout: 5000,
+            maxRetriesPerRequest: 1,
+            retryStrategy: () => null
+        });
+
+        redis.on('error', (err) => console.error('Redis Stats Error:', err.message));
+
+        const data = await redis.get('synonyms_dictionary');
+        await redis.quit();
+
+        if (!data) {
+            return res.json({ success: true, count: 0, totalSynonyms: 0, items: {} });
+        }
+
+        const parsed = JSON.parse(data);
+        const keys = Object.keys(parsed);
+        let totalSynonyms = 0;
+        
+        keys.forEach(k => {
+            totalSynonyms += Array.isArray(parsed[k]) ? parsed[k].length : 0;
+        });
+        
+        res.json({ 
+            success: true, 
+            count: keys.length,
+            totalSynonyms,
+            items: parsed,
+            timestamp: new Date().toISOString()
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Redis Stats Failed: ' + err.message });
+    }
+});
+
 // ─────────────────────────────────────────────────────────
 // EXPORTS
 // ─────────────────────────────────────────────────────────

@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentView = viewId;
         if (viewId === 'view-history') loadHistory();
         if (viewId === 'view-drafts') loadDrafts();
+        if (viewId === 'view-settings') loadRedisDashboard();
         updateMetrics();
     }
 
@@ -826,6 +827,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (btnVerifyRedis) {
+        btnVerifyRedis.addEventListener('click', async () => {
+            btnVerifyRedis.disabled = true;
+            const originalHtml = btnVerifyRedis.innerHTML;
+            btnVerifyRedis.innerHTML = 'Verifying...';
+
+            try {
+                const res = await fetch('/api/sync-redis/verify');
+                const data = await res.json();
+                if (data.success) {
+                    const msg = `✅ Redis Verification Success!\n\nKeys Found: ${data.keyCount}\nSample Keys: ${data.sample.join(', ')}...`;
+                    alert(msg);
+                } else {
+                    alert('❌ Verification failed: ' + (data.message || data.error));
+                }
+            } catch (err) {
+                alert('❌ Connection error: ' + err.message);
+            } finally {
+                btnVerifyRedis.disabled = false;
+                btnVerifyRedis.innerHTML = originalHtml;
+            }
+        });
+    }
+
     // ─── EXPORT ────────────────────────────────────────────
     const btnPreviewExport = document.getElementById('btn-preview-export');
     const modalPreview = document.getElementById('modal-preview');
@@ -888,4 +913,97 @@ document.addEventListener('DOMContentLoaded', () => {
             btnCopyPreview.classList.replace('btn-primary', 'btn-secondary');
         }, 2000);
     });
+
+    // ─── REDIS DASHBOARD ──────────────────────────────────────────
+    const btnRefreshRedis = document.getElementById('btn-refresh-redis');
+    const redisLoading = document.getElementById('redis-loading');
+    const redisContent = document.getElementById('redis-content');
+    const redisError = document.getElementById('redis-error');
+    const redisStatClusters = document.getElementById('redis-stat-clusters');
+    const redisStatWords = document.getElementById('redis-stat-words');
+    const redisStatStatus = document.getElementById('redis-stat-status');
+    const redisTableBody = document.getElementById('redis-table-body');
+
+    if (btnRefreshRedis) {
+        btnRefreshRedis.addEventListener('click', loadRedisDashboard);
+    }
+
+    async function loadRedisDashboard() {
+        if (!redisLoading) return;
+        
+        redisLoading.style.display = 'block';
+        redisContent.style.display = 'none';
+        redisError.style.display = 'none';
+        
+        try {
+            const res = await fetch('/api/redis/stats');
+            const data = await res.json();
+            
+            if (!data.success) throw new Error(data.error || 'Failed to fetch Redis data');
+            
+            redisStatClusters.textContent = data.count.toLocaleString();
+            redisStatWords.textContent = (data.totalSynonyms || 0).toLocaleString();
+            redisStatStatus.textContent = 'Connected (10.190.0.2)';
+            redisStatStatus.style.color = '#10b981'; // Green
+            
+            redisTableBody.innerHTML = '';
+            
+            if (data.count === 0) {
+                redisTableBody.innerHTML = '<tr><td colspan="2" style="padding: 1rem; text-align: center; color: var(--muted);">No data found in Redis. Start by pushing approved clusters!</td></tr>';
+            } else {
+                const keys = Object.keys(data.items);
+                // Sort keys alphabetically
+                keys.sort();
+                
+                // Show up to 100 items to avoid freezing the UI if it's massive
+                const displayKeys = keys.slice(0, 100);
+                
+                displayKeys.forEach(k => {
+                    const row = document.createElement('tr');
+                    row.style.borderBottom = '1px solid var(--border)';
+                    
+                    const cellKey = document.createElement('td');
+                    cellKey.style.padding = '10px 12px';
+                    cellKey.style.fontWeight = '500';
+                    cellKey.textContent = k;
+                    
+                    const cellValue = document.createElement('td');
+                    cellValue.style.padding = '10px 12px';
+                    cellValue.style.color = 'var(--muted)';
+                    cellValue.style.wordBreak = 'break-word';
+                    
+                    const arr = data.items[k];
+                    cellValue.textContent = Array.isArray(arr) ? arr.join(', ') : JSON.stringify(arr);
+                    
+                    row.appendChild(cellKey);
+                    row.appendChild(cellValue);
+                    redisTableBody.appendChild(row);
+                });
+                
+                if (keys.length > 100) {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.colSpan = 2;
+                    cell.style.padding = '10px 12px';
+                    cell.style.textAlign = 'center';
+                    cell.style.color = 'var(--muted)';
+                    cell.style.fontStyle = 'italic';
+                    cell.textContent = `... and ${keys.length - 100} more clusters (Showing first 100).`;
+                    row.appendChild(cell);
+                    redisTableBody.appendChild(row);
+                }
+            }
+            
+            redisLoading.style.display = 'none';
+            redisContent.style.display = 'block';
+            
+        } catch (err) {
+            console.error(err);
+            redisLoading.style.display = 'none';
+            redisContent.style.display = 'none';
+            redisError.style.display = 'block';
+            redisStatStatus.textContent = 'Disconnected';
+            redisStatStatus.style.color = 'var(--error)';
+        }
+    }
 });
