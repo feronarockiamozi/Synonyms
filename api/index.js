@@ -821,9 +821,9 @@ app.post('/api/sync-algolia', async (req, res) => {
         if (!rows.length) return res.json({ success: false, message: 'No approved records to sync.' });
 
         const appId = process.env.ALGOLIA_APP_ID;
-        const apiKey = process.env.ALGOLIA_API_KEY;
+        const apiKey = process.env.ALGOLIA_WRITE_KEY;
         if (!appId || !apiKey) {
-            return res.status(500).json({ error: 'ALGOLIA_APP_ID and ALGOLIA_API_KEY must be set in environment variables.' });
+            return res.status(500).json({ error: 'ALGOLIA_APP_ID and ALGOLIA_WRITE_KEY must be set in environment variables.' });
         }
 
         const client = algoliasearch(appId, apiKey);
