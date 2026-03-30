@@ -44,8 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const historySearch = document.getElementById('history-search');
     const btnDoExport = document.getElementById('btn-do-export');
-    const btnSyncRedis = document.getElementById('btn-sync-redis');
-    const btnVerifyRedis = document.getElementById('btn-verify-redis');
+    const btnSyncAlgolia = document.getElementById('btn-sync-algolia');
 
     // ─── INIT ──────────────────────────────────────────────
     updateMetrics();
@@ -79,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentView = viewId;
         if (viewId === 'view-history') loadHistory();
         if (viewId === 'view-drafts') loadDrafts();
-        if (viewId === 'view-settings') loadRedisDashboard();
+        if (viewId === 'view-settings') loadAlgoliaDashboard();
         updateMetrics();
     }
 
@@ -800,21 +799,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
     });
 
-    // ─── REDIS SYNC ───────────────────────────────────────────
-    if (btnSyncRedis) {
-        btnSyncRedis.addEventListener('click', async () => {
-            const conf = confirm("This will push all approved synonyms to GCP Memorystore (Redis). Proceed?");
+    // ─── ALGOLIA SYNC ──────────────────────────────────────────
+    if (btnSyncAlgolia) {
+        btnSyncAlgolia.addEventListener('click', async () => {
+            const conf = confirm('This will push all approved synonyms to Algolia (Synonyms-Index). Proceed?');
             if (!conf) return;
 
-            btnSyncRedis.disabled = true;
-            const originalHtml = btnSyncRedis.innerHTML;
-            btnSyncRedis.innerHTML = 'Syncing...';
+            btnSyncAlgolia.disabled = true;
+            const originalHtml = btnSyncAlgolia.innerHTML;
+            btnSyncAlgolia.innerHTML = 'Syncing...';
 
             try {
-                const res = await fetch('/api/sync-redis', { method: 'POST' });
+                const res = await fetch('/api/sync-algolia', { method: 'POST' });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(`Successfully synced ${data.count} clusters to Redis`, 'success');
+                    showToast(`Successfully synced ${data.count} clusters to Algolia`, 'success');
+                    loadAlgoliaDashboard();
                 } else {
                     showToast('Sync failed: ' + (data.error || 'Unknown error'), 'error');
                 }
@@ -914,96 +914,89 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     });
 
-    // ─── REDIS DASHBOARD ──────────────────────────────────────────
-    const btnRefreshRedis = document.getElementById('btn-refresh-redis');
-    const redisLoading = document.getElementById('redis-loading');
-    const redisContent = document.getElementById('redis-content');
-    const redisError = document.getElementById('redis-error');
-    const redisStatClusters = document.getElementById('redis-stat-clusters');
-    const redisStatWords = document.getElementById('redis-stat-words');
-    const redisStatStatus = document.getElementById('redis-stat-status');
-    const redisTableBody = document.getElementById('redis-table-body');
+    // ─── ALGOLIA DASHBOARD ───────────────────────────────────────
+    const btnRefreshAlgolia = document.getElementById('btn-refresh-algolia');
+    const algoliaLoading = document.getElementById('algolia-loading');
+    const algoliaContent = document.getElementById('algolia-content');
+    const algoliaError = document.getElementById('algolia-error');
+    const algoliaStatClusters = document.getElementById('algolia-stat-clusters');
+    const algoliaStatWords = document.getElementById('algolia-stat-words');
+    const algoliaStatStatus = document.getElementById('algolia-stat-status');
+    const algoliaTableBody = document.getElementById('algolia-table-body');
 
-    if (btnRefreshRedis) {
-        btnRefreshRedis.addEventListener('click', loadRedisDashboard);
+    if (btnRefreshAlgolia) {
+        btnRefreshAlgolia.addEventListener('click', loadAlgoliaDashboard);
     }
 
-    async function loadRedisDashboard() {
-        if (!redisLoading) return;
-        
-        redisLoading.style.display = 'block';
-        redisContent.style.display = 'none';
-        redisError.style.display = 'none';
-        
+    async function loadAlgoliaDashboard() {
+        if (!algoliaLoading) return;
+
+        algoliaLoading.style.display = 'block';
+        algoliaContent.style.display = 'none';
+        algoliaError.style.display = 'none';
+
         try {
-            const res = await fetch('/api/redis/stats');
+            const res = await fetch('/api/algolia/stats');
             const data = await res.json();
-            
-            if (!data.success) throw new Error(data.error || 'Failed to fetch Redis data');
-            
-            redisStatClusters.textContent = data.count.toLocaleString();
-            redisStatWords.textContent = (data.totalSynonyms || 0).toLocaleString();
-            redisStatStatus.textContent = 'Connected (10.190.0.2)';
-            redisStatStatus.style.color = '#10b981'; // Green
-            
-            redisTableBody.innerHTML = '';
-            
+
+            if (!data.success) throw new Error(data.error || 'Failed to fetch Algolia data');
+
+            algoliaStatClusters.textContent = data.count.toLocaleString();
+            algoliaStatWords.textContent = String(data.totalSynonyms ?? 0);
+            algoliaStatStatus.textContent = 'Connected (✓ Algolia Cloud)';
+            algoliaStatStatus.style.color = '#10b981';
+
+            algoliaTableBody.innerHTML = '';
+
             if (data.count === 0) {
-                redisTableBody.innerHTML = '<tr><td colspan="2" style="padding: 1rem; text-align: center; color: var(--muted);">No data found in Redis. Start by pushing approved clusters!</td></tr>';
+                algoliaTableBody.innerHTML = '<tr><td colspan="2" style="padding: 1rem; text-align: center; color: var(--muted);">No data found in Algolia. Click \'Sync to Algolia\' first!</td></tr>';
             } else {
-                const keys = Object.keys(data.items);
-                // Sort keys alphabetically
-                keys.sort();
-                
-                // Show up to 100 items to avoid freezing the UI if it's massive
+                const keys = Object.keys(data.items).sort();
                 const displayKeys = keys.slice(0, 100);
-                
+
                 displayKeys.forEach(k => {
                     const row = document.createElement('tr');
                     row.style.borderBottom = '1px solid var(--border)';
-                    
+
                     const cellKey = document.createElement('td');
                     cellKey.style.padding = '10px 12px';
                     cellKey.style.fontWeight = '500';
                     cellKey.textContent = k;
-                    
+
                     const cellValue = document.createElement('td');
                     cellValue.style.padding = '10px 12px';
                     cellValue.style.color = 'var(--muted)';
                     cellValue.style.wordBreak = 'break-word';
-                    
+
                     const arr = data.items[k];
                     cellValue.textContent = Array.isArray(arr) ? arr.join(', ') : JSON.stringify(arr);
-                    
+
                     row.appendChild(cellKey);
                     row.appendChild(cellValue);
-                    redisTableBody.appendChild(row);
+                    algoliaTableBody.appendChild(row);
                 });
-                
+
                 if (keys.length > 100) {
                     const row = document.createElement('tr');
                     const cell = document.createElement('td');
                     cell.colSpan = 2;
-                    cell.style.padding = '10px 12px';
-                    cell.style.textAlign = 'center';
-                    cell.style.color = 'var(--muted)';
-                    cell.style.fontStyle = 'italic';
-                    cell.textContent = `... and ${keys.length - 100} more clusters (Showing first 100).`;
+                    cell.style.cssText = 'padding:10px 12px; text-align:center; color:var(--muted); font-style:italic;';
+                    cell.textContent = `... and ${keys.length - 100} more clusters (showing first 100).`;
                     row.appendChild(cell);
-                    redisTableBody.appendChild(row);
+                    algoliaTableBody.appendChild(row);
                 }
             }
-            
-            redisLoading.style.display = 'none';
-            redisContent.style.display = 'block';
-            
+
+            algoliaLoading.style.display = 'none';
+            algoliaContent.style.display = 'block';
+
         } catch (err) {
             console.error(err);
-            redisLoading.style.display = 'none';
-            redisContent.style.display = 'none';
-            redisError.style.display = 'block';
-            redisStatStatus.textContent = 'Disconnected';
-            redisStatStatus.style.color = 'var(--error)';
+            algoliaLoading.style.display = 'none';
+            algoliaContent.style.display = 'none';
+            algoliaError.style.display = 'block';
+            algoliaStatStatus.textContent = 'Disconnected';
+            algoliaStatStatus.style.color = 'var(--error)';
         }
     }
 });

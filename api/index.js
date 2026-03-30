@@ -8,7 +8,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { GoogleGenAI } = require('@google/genai');
 const dotenv = require('dotenv');
 const xlsx = require('xlsx');
-const Redis = require('ioredis');
+const { algoliasearch } = require('algoliasearch');
 
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config({ path: path.join(__dirname, '..', '.env') });
@@ -814,140 +814,86 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
     }
 });
 
-app.post('/api/sync-redis', async (req, res) => {
+// ─── ALGOLIA SYNC ─────────────────────────────────────────
+app.post('/api/sync-algolia', async (req, res) => {
     try {
         const rows = await Cluster.find({ status: 'approved' });
-        
-        // Format for Algolia or general search usage: 
-        // Map of product_type -> array of synonyms
-        const dictionary = {};
-        rows.forEach(r => {
-            // Include synonyms and regional variations
+        if (!rows.length) return res.json({ success: false, message: 'No approved records to sync.' });
+
+        const appId = process.env.ALGOLIA_APP_ID;
+        const apiKey = process.env.ALGOLIA_API_KEY;
+        if (!appId || !apiKey) {
+            return res.status(500).json({ error: 'ALGOLIA_APP_ID and ALGOLIA_API_KEY must be set in environment variables.' });
+        }
+
+        const client = algoliasearch(appId, apiKey);
+
+        const objects = rows.map(r => {
             const allSyns = [...new Set([
                 ...(r.synonyms || []),
                 ...(r.regional_variations || [])
             ])];
-            dictionary[r.product_type] = allSyns;
+            return {
+                objectID: String(r._id),
+                product_type: r.product_type,
+                synonyms: allSyns,
+                source: r.source,
+                llm: r.llm,
+                updatedAt: r.updatedAt ? new Date(r.updatedAt).getTime() : Date.now()
+            };
         });
 
-        // Use a one-off connection for the sync to ensure it works across different environments
-        const redisHost = process.env.REDIS_HOST || 'localhost';
-        const redisPort = parseInt(process.env.REDIS_PORT || '6379');
-        const redisPassword = process.env.REDIS_PASSWORD || undefined;
+        const INDEX_NAME = 'Synonyms-Index';
+        const CHUNK_SIZE = 1000;
+        console.log(`Syncing ${objects.length} approved clusters to Algolia index "${INDEX_NAME}" in batches of ${CHUNK_SIZE}...`);
 
-        console.log(`Syncing ${rows.length} approved clusters to Redis at ${redisHost}:${redisPort}...`);
-
-        const redis = new Redis({
-            host: redisHost,
-            port: redisPort,
-            password: redisPassword,
-            connectTimeout: 5000,
-            maxRetriesPerRequest: 1,
-            retryStrategy: () => null // Do not retry if connection fails once
-        });
-
-        // Add an error handler to prevent "Unhandled error event" logs
-        redis.on('error', (err) => {
-            console.error('Redis Connection Error:', err.message);
-        });
-
-        // Set the aggregated dictionary
-        await redis.set('synonyms_dictionary', JSON.stringify(dictionary));
-        
-        const pipeline = redis.pipeline();
-        for (const [ptype, syns] of Object.entries(dictionary)) {
-            pipeline.set(`synonym:${ptype.toLowerCase().replace(/\s+/g, '_')}`, JSON.stringify(syns));
+        for (let i = 0; i < objects.length; i += CHUNK_SIZE) {
+            const chunk = objects.slice(i, i + CHUNK_SIZE);
+            await client.saveObjects({ indexName: INDEX_NAME, objects: chunk });
+            console.log(`  Batch ${Math.floor(i / CHUNK_SIZE) + 1} done (${chunk.length} items).`);
         }
-        await pipeline.exec();
 
-        await redis.quit();
-
-        res.json({ success: true, count: rows.length });
+        res.json({ success: true, count: objects.length });
     } catch (err) {
-        console.error('Redis Sync Error:', err);
-        res.status(500).json({ error: 'Redis Sync Failed: ' + err.message });
+        console.error('Algolia Sync Error:', err);
+        res.status(500).json({ error: 'Algolia Sync Failed: ' + err.message });
     }
 });
 
-app.get('/api/sync-redis/verify', async (req, res) => {
+app.get('/api/algolia/stats', async (req, res) => {
     try {
-        const redisHost = process.env.REDIS_HOST || 'localhost';
-        const redisPort = parseInt(process.env.REDIS_PORT || '6379');
-        const redisPassword = process.env.REDIS_PASSWORD || undefined;
-
-        const redis = new Redis({
-            host: redisHost,
-            port: redisPort,
-            password: redisPassword,
-            connectTimeout: 5000,
-            maxRetriesPerRequest: 1,
-            retryStrategy: () => null
-        });
-
-        redis.on('error', (err) => console.error('Redis Verify Error:', err.message));
-
-        const data = await redis.get('synonyms_dictionary');
-        await redis.quit();
-
-        if (!data) {
-            return res.json({ success: false, message: 'No dictionary found in Redis. Try syncing first.' });
+        const appId = process.env.ALGOLIA_APP_ID;
+        const apiKey = process.env.ALGOLIA_API_KEY;
+        if (!appId || !apiKey) {
+            return res.status(500).json({ error: 'ALGOLIA_APP_ID and ALGOLIA_API_KEY must be set in environment variables.' });
         }
 
-        const parsed = JSON.parse(data);
-        const keys = Object.keys(parsed);
-        
-        res.json({ 
-            success: true, 
-            keyCount: keys.length,
-            sample: keys.slice(0, 3),
+        const client = algoliasearch(appId, apiKey);
+
+        // Fetch up to 100 records as a live preview
+        const searchRes = await client.searchSingleIndex({
+            indexName: 'Synonyms-Index',
+            searchParams: { hitsPerPage: 100, query: '' }
+        });
+
+        const items = {};
+        let totalSynonymsSample = 0;
+        searchRes.hits.forEach(hit => {
+            items[hit.product_type] = hit.synonyms || [];
+            totalSynonymsSample += Array.isArray(hit.synonyms) ? hit.synonyms.length : 0;
+        });
+
+        res.json({
+            success: true,
+            count: searchRes.nbHits,
+            totalSynonyms: searchRes.nbHits > 100
+                ? `${totalSynonymsSample}+ (Top 100 Sample)`
+                : totalSynonymsSample,
+            items,
             timestamp: new Date().toISOString()
         });
     } catch (err) {
-        res.status(500).json({ error: 'Redis Verification Failed: ' + err.message });
-    }
-});
-
-app.get('/api/redis/stats', async (req, res) => {
-    try {
-        const redisHost = process.env.REDIS_HOST || 'localhost';
-        const redisPort = parseInt(process.env.REDIS_PORT || '6379');
-        const redisPassword = process.env.REDIS_PASSWORD || undefined;
-
-        const redis = new Redis({
-            host: redisHost,
-            port: redisPort,
-            password: redisPassword,
-            connectTimeout: 5000,
-            maxRetriesPerRequest: 1,
-            retryStrategy: () => null
-        });
-
-        redis.on('error', (err) => console.error('Redis Stats Error:', err.message));
-
-        const data = await redis.get('synonyms_dictionary');
-        await redis.quit();
-
-        if (!data) {
-            return res.json({ success: true, count: 0, totalSynonyms: 0, items: {} });
-        }
-
-        const parsed = JSON.parse(data);
-        const keys = Object.keys(parsed);
-        let totalSynonyms = 0;
-        
-        keys.forEach(k => {
-            totalSynonyms += Array.isArray(parsed[k]) ? parsed[k].length : 0;
-        });
-        
-        res.json({ 
-            success: true, 
-            count: keys.length,
-            totalSynonyms,
-            items: parsed,
-            timestamp: new Date().toISOString()
-        });
-    } catch (err) {
-        res.status(500).json({ error: 'Redis Stats Failed: ' + err.message });
+        res.status(500).json({ error: 'Algolia Stats Failed: ' + err.message });
     }
 });
 

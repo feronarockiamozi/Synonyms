@@ -352,20 +352,13 @@
                                 id="count-approved-words-header">0</strong> high-quality synonyms.</p>
                     </div>
                     <div class="action-row" style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-                        <button class="btn btn-secondary" id="btn-sync-redis" title="Push to GCP Memorystore">
+                        <button class="btn btn-secondary" id="btn-sync-algolia" title="Push to Algolia Index">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                 <polyline points="17 8 12 3 7 8" />
                                 <line x1="12" y1="3" x2="12" y2="15" />
                             </svg>
-                            Sync to Redis
-                        </button>
-                        <button class="btn btn-outline" id="btn-verify-redis" title="Verify data in Redis (Private IP)">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
-                            </svg>
-                            Verify Sync
+                            Sync to Algolia
                         </button>
                         <div class="search-box">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -494,12 +487,12 @@
                             </button>
                     </div>
                     
-                    <!-- Redis Dashboard Section -->
+                    <!-- Algolia Dashboard Section -->
                     <div class="settings-panel"
                         style="grid-column: 1 / -1; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 0.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: .5rem; margin-bottom: 1rem;">
-                            <h3 style="font-size: 1.1rem; margin: 0;">Redis Synchronization Status</h3>
-                            <button id="btn-refresh-redis" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.85rem;">
+                            <h3 style="font-size: 1.1rem; margin: 0;">Algolia Synchronization Status</h3>
+                            <button id="btn-refresh-algolia" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.85rem;">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
                                     <polyline points="23 4 23 10 17 10"></polyline>
                                     <polyline points="1 20 1 14 7 14"></polyline>
@@ -509,27 +502,27 @@
                             </button>
                         </div>
 
-                        <div id="redis-loading" style="display: none; text-align: center; padding: 2rem; color: var(--muted);">
-                            <span class="loading-spinner"></span> Loading real-time Redis data from Private VPC...
+                        <div id="algolia-loading" style="display: none; text-align: center; padding: 2rem; color: var(--muted);">
+                            <span class="loading-spinner"></span> Loading real-time data from Algolia...
                         </div>
                         
-                        <div id="redis-content" style="display: block;">
+                        <div id="algolia-content" style="display: block;">
                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
                                 <div style="background: var(--bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
-                                    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem;">Total Synced Clusters</p>
-                                    <h4 id="redis-stat-clusters" style="font-size: 1.5rem; margin: 0; color: var(--primary);">-</h4>
+                                    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem;">Total Synced Objects</p>
+                                    <h4 id="algolia-stat-clusters" style="font-size: 1.5rem; margin: 0; color: var(--primary);">-</h4>
                                 </div>
                                 <div style="background: var(--bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
                                     <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem;">Total Synonyms (Words)</p>
-                                    <h4 id="redis-stat-words" style="font-size: 1.5rem; margin: 0; color: var(--text);">-</h4>
+                                    <h4 id="algolia-stat-words" style="font-size: 1.5rem; margin: 0; color: var(--text);">-</h4>
                                 </div>
                                 <div style="background: var(--bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
-                                    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem;">Memory Store Connection</p>
-                                    <h4 id="redis-stat-status" style="font-size: 1.1rem; margin: 0; margin-top: 0.3rem; color: var(--muted);">Unknown</h4>
+                                    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem;">Algolia Connection</p>
+                                    <h4 id="algolia-stat-status" style="font-size: 1.1rem; margin: 0; margin-top: 0.3rem; color: var(--muted);">Unknown</h4>
                                 </div>
                             </div>
                             
-                            <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text);">Live Redis Dictionary Data</h4>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text);">Live Algolia Index Data</h4>
                             <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; max-height: 250px; overflow-y: auto;">
                                 <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
                                     <thead style="background: var(--panel); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10;">
@@ -538,15 +531,15 @@
                                             <th style="padding: 10px 12px; font-weight: 500; color: var(--muted);">Synonyms Array</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="redis-table-body">
-                                        <tr><td colspan="2" style="padding: 1rem; text-align: center; color: var(--muted);">Click Refresh Data to view live Redis dictionary.</td></tr>
+                                    <tbody id="algolia-table-body">
+                                        <tr><td colspan="2" style="padding: 1rem; text-align: center; color: var(--muted);">Click Refresh Data to view live Algolia index data.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                         
-                        <div id="redis-error" style="display: none; padding: 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); border-radius: 8px; color: var(--error); margin-top: 1rem; font-size: 0.9rem;">
-                            Failed to connect to Redis instance at 10.190.0.2. Check VPC Connector and Environment Variables.
+                        <div id="algolia-error" style="display: none; padding: 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); border-radius: 8px; color: var(--error); margin-top: 1rem; font-size: 0.9rem;">
+                            Failed to connect to Algolia. Check that ALGOLIA_APP_ID and ALGOLIA_API_KEY are set correctly.
                         </div>
                     </div>
                 </div>
