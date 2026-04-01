@@ -46,6 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnDoExport = document.getElementById('btn-do-export');
     const btnSyncAlgolia = document.getElementById('btn-sync-algolia');
 
+    // Algolia Dashboard Elements
+    const btnRefreshAlgolia = document.getElementById('btn-refresh-algolia');
+    const algoliaLoading = document.getElementById('algolia-loading');
+    const algoliaContent = document.getElementById('algolia-content');
+    const algoliaError = document.getElementById('algolia-error');
+    const algoliaStatClusters = document.getElementById('algolia-stat-clusters');
+    const algoliaStatWords = document.getElementById('algolia-stat-words');
+    const algoliaStatStatus = document.getElementById('algolia-stat-status');
+    const algoliaTableBody = document.getElementById('algolia-table-body');
+
     // ─── INIT ──────────────────────────────────────────────
     updateMetrics();
     setInterval(updateMetrics, 15000);
@@ -819,37 +829,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     showToast('Sync failed: ' + (data.error || 'Unknown error'), 'error');
                 }
             } catch (e) {
-                showToast('Network error during Redis sync.', 'error');
+                showToast('Network error during sync.', 'error');
             } finally {
-                btnSyncRedis.disabled = false;
-                btnSyncRedis.innerHTML = originalHtml;
+                btnSyncAlgolia.disabled = false;
+                btnSyncAlgolia.innerHTML = originalHtml;
             }
         });
     }
 
-    if (btnVerifyRedis) {
-        btnVerifyRedis.addEventListener('click', async () => {
-            btnVerifyRedis.disabled = true;
-            const originalHtml = btnVerifyRedis.innerHTML;
-            btnVerifyRedis.innerHTML = 'Verifying...';
-
-            try {
-                const res = await fetch('/api/sync-redis/verify');
-                const data = await res.json();
-                if (data.success) {
-                    const msg = `✅ Redis Verification Success!\n\nKeys Found: ${data.keyCount}\nSample Keys: ${data.sample.join(', ')}...`;
-                    alert(msg);
-                } else {
-                    alert('❌ Verification failed: ' + (data.message || data.error));
-                }
-            } catch (err) {
-                alert('❌ Connection error: ' + err.message);
-            } finally {
-                btnVerifyRedis.disabled = false;
-                btnVerifyRedis.innerHTML = originalHtml;
-            }
-        });
-    }
 
     // ─── EXPORT ────────────────────────────────────────────
     const btnPreviewExport = document.getElementById('btn-preview-export');
@@ -913,16 +900,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btnCopyPreview.classList.replace('btn-primary', 'btn-secondary');
         }, 2000);
     });
-
-    // ─── ALGOLIA DASHBOARD ───────────────────────────────────────
-    const btnRefreshAlgolia = document.getElementById('btn-refresh-algolia');
-    const algoliaLoading = document.getElementById('algolia-loading');
-    const algoliaContent = document.getElementById('algolia-content');
-    const algoliaError = document.getElementById('algolia-error');
-    const algoliaStatClusters = document.getElementById('algolia-stat-clusters');
-    const algoliaStatWords = document.getElementById('algolia-stat-words');
-    const algoliaStatStatus = document.getElementById('algolia-stat-status');
-    const algoliaTableBody = document.getElementById('algolia-table-body');
 
     if (btnRefreshAlgolia) {
         btnRefreshAlgolia.addEventListener('click', loadAlgoliaDashboard);
