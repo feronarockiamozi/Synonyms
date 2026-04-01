@@ -828,32 +828,112 @@ app.post('/api/sync-algolia', async (req, res) => {
 
         const client = algoliasearch(appId, apiKey);
 
-        const objects = rows.map(r => {
-            const allSyns = [...new Set([
+        const PRODUCT_INDEX = process.env.ALGOLIA_INDEX_NAME || 'products-poc';
+        const MATCH_THRESHOLD = 0;
+        
+        console.log(`Preparing dynamic synonym classification against ${PRODUCT_INDEX}...`);
+        
+        const termsArray = rows.flatMap(r => [
+            r.product_type,
+            ...(r.synonyms || []),
+            ...(r.regional_variations || [])
+        ]);
+
+        const allUniqueTerms = [...new Set(termsArray)].filter(t => t && String(t).trim().length > 0);
+        
+        const termHits = {};
+        const SEARCH_CHUNK = 50;
+        for (let i = 0; i < allUniqueTerms.length; i += SEARCH_CHUNK) {
+            const chunk = allUniqueTerms.slice(i, i + SEARCH_CHUNK);
+            const searchRes = await client.search({
+                requests: chunk.map(t => ({ 
+                    indexName: PRODUCT_INDEX, 
+                    query: t, 
+                    hitsPerPage: 1,
+                    typoTolerance: false,
+                    queryType: 'prefixNone',
+                    analytics: false,
+                    synonyms: false,
+                    ignorePlurals: false
+                }))
+            });
+            chunk.forEach((t, idx) => {
+                termHits[t] = searchRes.results[idx].nbHits;
+            });
+        }
+
+        const dashboardObjects = [];
+        const synonymRules = [];
+
+        rows.forEach(r => {
+            const pt = r.product_type;
+            const variations = [...new Set([
                 ...(r.synonyms || []),
                 ...(r.regional_variations || [])
             ])];
-            return {
+
+            const twoWayGroup = [pt];
+            const oneWayGroup = [];
+
+            variations.forEach(v => {
+                if (v.toLowerCase() === pt.toLowerCase()) return;
+                if (termHits[v] > MATCH_THRESHOLD) {
+                    twoWayGroup.push(v);
+                } else {
+                    oneWayGroup.push(v);
+                }
+            });
+
+            if (twoWayGroup.length > 1) {
+                synonymRules.push({
+                    objectID: `syn-${String(r._id)}-twoway`,
+                    type: 'synonym',
+                    synonyms: twoWayGroup
+                });
+            }
+
+            oneWayGroup.forEach((v, idx) => {
+                synonymRules.push({
+                    objectID: `syn-${String(r._id)}-oneway-${idx}`,
+                    type: 'oneWaySynonym',
+                    input: v,
+                    synonyms: [pt]
+                });
+            });
+
+            dashboardObjects.push({
                 objectID: String(r._id),
-                product_type: r.product_type,
-                synonyms: allSyns,
+                product_type: pt,
+                synonyms: [pt, ...variations],
                 source: r.source,
                 llm: r.llm,
+                twoWayCount: twoWayGroup.length > 1 ? twoWayGroup.length : 0,
+                oneWayCount: oneWayGroup.length,
                 updatedAt: r.updatedAt ? new Date(r.updatedAt).getTime() : Date.now()
-            };
+            });
         });
 
-        const INDEX_NAME = 'Synonyms-Index';
+        const DASHBOARD_INDEX = 'Synonyms-Index';
         const CHUNK_SIZE = 1000;
-        console.log(`Syncing ${objects.length} approved clusters to Algolia index "${INDEX_NAME}" in batches of ${CHUNK_SIZE}...`);
-
-        for (let i = 0; i < objects.length; i += CHUNK_SIZE) {
-            const chunk = objects.slice(i, i + CHUNK_SIZE);
-            await client.saveObjects({ indexName: INDEX_NAME, objects: chunk });
-            console.log(`  Batch ${Math.floor(i / CHUNK_SIZE) + 1} done (${chunk.length} items).`);
+        console.log(`Syncing ${dashboardObjects.length} cluster records to preview index "${DASHBOARD_INDEX}"...`);
+        for (let i = 0; i < dashboardObjects.length; i += CHUNK_SIZE) {
+            const chunk = dashboardObjects.slice(i, i + CHUNK_SIZE);
+            await client.saveObjects({ indexName: DASHBOARD_INDEX, objects: chunk });
         }
 
-        res.json({ success: true, count: objects.length });
+        console.log(`Syncing ${synonymRules.length} semantic rules to catalog "${PRODUCT_INDEX}"...`);
+        if (synonymRules.length > 0) {
+            for (let i = 0; i < synonymRules.length; i += CHUNK_SIZE) {
+                const chunk = synonymRules.slice(i, i + CHUNK_SIZE);
+                await client.saveSynonyms({
+                    indexName: PRODUCT_INDEX,
+                    synonymHit: chunk,
+                    replaceExistingSynonyms: false
+                });
+            }
+        }
+
+        res.json({ success: true, count: dashboardObjects.length, ruleCount: synonymRules.length });
     } catch (err) {
         console.error('Algolia Sync Error:', err);
         res.status(500).json({ error: 'Algolia Sync Failed: ' + err.message });
