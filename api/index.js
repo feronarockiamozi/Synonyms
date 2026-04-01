@@ -560,7 +560,7 @@ async function splitByCache(terms) {
     }
 }
 
-function mergeResults(terms, synResult, regResult, source) {
+function mergeResults(terms, synResult, regResult, source, model) {
     return terms.map(term => {
         const synFound = synResult.data.results.find(r => r.product_type.toLowerCase() === term.toLowerCase());
         const regFound = regResult.data.results.find(r => r.product_type.toLowerCase() === term.toLowerCase());
@@ -571,7 +571,14 @@ function mergeResults(terms, synResult, regResult, source) {
             ...synonyms.map(s => s.toLowerCase()),
             ...regional_variations.map(s => s.toLowerCase()),
         ]);
-        return { product_type: term, synonyms, regional_variations, cluster_terms: Array.from(clusterSet), source };
+        return { 
+            product_type: term, 
+            synonyms, 
+            regional_variations, 
+            cluster_terms: Array.from(clusterSet), 
+            source,
+            llm: model 
+        };
     });
 }
 
@@ -766,7 +773,7 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
                 const outputTokens = synResult.outputTokens + regResult.outputTokens;
                 await updateMetrics(inputTokens, outputTokens, 2, job.model);
 
-                const results = mergeResults(batch, synResult, regResult, job.mode);
+                const results = mergeResults(batch, synResult, regResult, job.mode, job.model);
 
                 results.forEach(item => {
                     item.variations = conceptDataMap.get(item.product_type) || [item.product_type];

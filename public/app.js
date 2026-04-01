@@ -688,6 +688,11 @@ document.addEventListener('DOMContentLoaded', () => {
             : '';
 
         const isHistory = oldCard.__isHistory || false;
+        
+        const modelClass = (item.llm || '').toLowerCase().includes('gemini') ? 'gemini' : 'claude';
+        const modelLabel = item.llm || (modelClass === 'gemini' ? 'Gemini 3 Flash' : 'Claude 3.5 Haiku');
+        const modelBadge = `<div class="model-tag ${modelClass}">${modelLabel}</div>`;
+
         const card = document.createElement('div');
         card.className = 'cluster-card';
         card.__item = item;
