@@ -667,26 +667,28 @@ app.post('/api/jobs', async (req, res) => {
 app.get('/api/jobs/:id/stream', async (req, res) => {
     const jobId = req.params.id;
 
-    try {
-        const job = await Job.findOne({ job_id: jobId });
-        if (!job) return res.status(404).send('Job not found in DB');
-
-        // Delete job to prevent re-execution or duplicate streaming
-        await Job.deleteOne({ job_id: jobId });
-
-        res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Connection', 'keep-alive');
-        res.flushHeaders();
-
         let isAborted = false;
-        req.on('close', () => { isAborted = true; });
-
         const send = (type, data) => {
-            if (!isAborted) res.write(`data: ${JSON.stringify({ type, ...data })}\n\n`);
+            if (!isAborted && !res.writableEnded) {
+                res.write(`data: ${JSON.stringify({ type, ...data })}\n\n`);
+            }
         };
 
-        let rawTerms = [];
+        try {
+            const job = await Job.findOne({ job_id: jobId });
+            if (!job) return res.status(404).send('Job not found in DB');
+
+            // Delete job to prevent re-execution or duplicate streaming
+            await Job.deleteOne({ job_id: jobId });
+
+            res.setHeader('Content-Type', 'text/event-stream');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('Connection', 'keep-alive');
+            res.flushHeaders();
+
+            req.on('close', () => { isAborted = true; });
+
+            let rawTerms = [];
 
         // 1. Gather all terms
         if (job.type === 'index') {

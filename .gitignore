@@ -9,6 +9,7 @@ node_modules/
 synonyms_backup.json
 *.xlsx
 *.txt
+!data/unique_ptypes.txt
 *.log
 creds.json
 data/creds.json
