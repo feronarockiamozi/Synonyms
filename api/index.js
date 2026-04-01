@@ -950,7 +950,7 @@ app.post('/api/sync-algolia', async (req, res) => {
                 await client.saveSynonyms({
                     indexName: PRODUCT_INDEX,
                     synonymHit: chunk,
-                    replaceExistingSynonyms: true
+                    replaceExistingSynonyms: i === 0 // Only replace on the first chunk
                 });
             }
         }
