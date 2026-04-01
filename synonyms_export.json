@@ -1,0 +1,1449 @@
+[
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0e9-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "transformer toy",
+      "transformers action figure",
+      "robot transformer",
+      "transformer",
+      "converting robot",
+      "robot toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0ea-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "travel game",
+      "portable game",
+      "travel board game"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0eb-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "travel kit",
+      "travel essentials kit",
+      "baby travel kit",
+      "travel organizer",
+      "travel set"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0ec-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "tree decoration",
+      "tree ornament",
+      "christmas tree decoration",
+      "Christmas tree decoration",
+      "tree lights"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0ed-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "tricycle",
+      "kids tricycle",
+      "baby tricycle",
+      "bachchon ki cycle",
+      "three wheeler"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0ee-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "trolley bag",
+      "luggage trolley",
+      "travel trolley",
+      "trolley",
+      "suitcase",
+      "luggage bag"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0ef-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "trousers",
+      "pants",
+      "track pants",
+      "kids trousers",
+      "pant",
+      "trouser"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0f0-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "trunks",
+      "swim trunks",
+      "swimming trunks",
+      "shorts",
+      "swimming shorts"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0f1-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "tshirt",
+      "t-shirt",
+      "kids tshirt",
+      "round neck tshirt",
+      "tee"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0f8-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "activity book",
+      "activity workbook",
+      "busy book",
+      "puzzle book"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0f8-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "khel kitaab",
+    "synonyms": [
+      "activity book"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0f9-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "activity cube",
+      "activity block",
+      "bead cube",
+      "khel cube",
+      "busy cube"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0fc-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "activity toy",
+      "educational toy",
+      "busy toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0fc-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "khel khilona",
+    "synonyms": [
+      "activity toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b0fd-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "activity worksheet",
+      "worksheet",
+      "learning worksheet",
+      "puzzle sheet"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b102-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "alphabet matching set",
+      "letter matching game",
+      "alphabet game",
+      "alphabet learning set"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b103-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "alphabet writing workbook",
+      "letter writing book",
+      "alphabet workbook",
+      "alphabet writing book",
+      "letter writing practice"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b104-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "animal play set",
+      "animal figurine set",
+      "toy animal set",
+      "animal toys",
+      "jungle animals set",
+      "plastic animals"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b105-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "animals chart",
+      "animal chart",
+      "animal poster",
+      "animals poster",
+      "janwar chart"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b106-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "anti-chafing shorts",
+      "chafing shorts",
+      "bike shorts kids",
+      "friction shorts",
+      "rash shorts"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b107-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "antiseptic cream",
+      "antiseptic ointment",
+      "healing cream",
+      "medicated cream"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b108-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "archery toy set",
+      "toy bow and arrow",
+      "kids archery set",
+      "archery set",
+      "bow and arrow toy",
+      "toy bow arrow"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b109-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "baby bath toy",
+      "bath toy",
+      "water bath toy",
+      "water toy",
+      "rubber duck toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b10a-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "baby carrier",
+      "baby sling",
+      "baby wrap",
+      "infant carrier",
+      "jhula carrier"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b10b-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "baby carrier seat cover",
+      "carrier seat cover",
+      "baby carrier cover",
+      "nursing cover",
+      "carrier cover",
+      "baby sling cover"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b10c-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "baby chain links toy",
+      "chain links toy",
+      "baby chain toy",
+      "link toy",
+      "stroller chain toy",
+      "chain toy",
+      "baby chain"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b10d-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "baby feeder",
+      "self feeder",
+      "silicone feeder",
+      "baby food feeder",
+      "feeding bottle",
+      "doodh bottle",
+      "baby bottle"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b10e-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "baby helmet",
+      "safety helmet",
+      "crawling helmet",
+      "infant helmet",
+      "baby safety helmet"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b10f-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "baby toy",
+      "infant toy",
+      "newborn toy",
+      "baby rattle",
+      "baby khilona"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b10f-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "khilona",
+    "synonyms": [
+      "baby toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b110-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "badminton racket",
+      "badminton racquet",
+      "badminton bat",
+      "shuttle racket"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b111-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "badminton shuttlecock",
+      "shuttlecock",
+      "badminton birdie",
+      "badminton shuttle"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b111-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "birdie",
+    "synonyms": [
+      "badminton shuttlecock"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b112-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "balancing game",
+      "balance toy",
+      "stacking balance game",
+      "balancing toy",
+      "stack game"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b113-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "ball drop toy",
+      "drop ball toy",
+      "ball dropper toy",
+      "ball popper"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b114-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "ball pool",
+      "ball pit",
+      "play ball pool",
+      "gend ka pool"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b115-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "ball slider",
+      "ball slide toy",
+      "slider toy",
+      "sliding ball toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b126-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "basketball",
+      "basket ball",
+      "sports basketball",
+      "basketball ball"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b127-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "basketball hoop set",
+      "basketball stand",
+      "hoop and stand",
+      "hoop stand",
+      "basket ball set"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b128-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "basketball set",
+      "basketball kit",
+      "basketball combo",
+      "basket ball set"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b129-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bassinet",
+      "baby bassinet",
+      "bedside bassinet",
+      "jhula cot",
+      "baby cot"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b129-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "palna",
+    "synonyms": [
+      "bassinet"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b12a-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bath book",
+      "water book",
+      "bath time book",
+      "waterproof book"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b12b-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bath rinser",
+      "water rinser",
+      "baby rinser",
+      "mug",
+      "water mug",
+      "rinsing mug"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b12c-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bath toy",
+      "water toy",
+      "bathtub toy",
+      "naha toy",
+      "bath time toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b12d-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bather",
+      "baby bather",
+      "bath tub bather",
+      "bath tub",
+      "baby tub"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b12d-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "naha ghadi",
+    "synonyms": [
+      "bather"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b12e-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bathing harness",
+      "bath harness",
+      "baby bath seat",
+      "bath support"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b148-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "booties",
+      "baby booties",
+      "soft booties",
+      "baby bootie"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b148-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "bootie",
+    "synonyms": [
+      "booties"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b149-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bottle brush",
+      "bottle cleaning brush",
+      "nipple brush",
+      "bottle cleaner brush",
+      "feeding bottle brush"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b14a-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bottle carrier",
+      "bottle holder",
+      "bottle bag"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b14b-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bottle cover",
+      "bottle warmer cover",
+      "bottle insulator",
+      "insulated bottle cover"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b14c-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bottle drying rack",
+      "bottle dryer stand",
+      "drying rack",
+      "bottle stand"
+    ]
+  },
+  {
+    "objectID": "syn-69c2830d8f28a2ad0f55b14f-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "upma mix",
+      "instant upma mix",
+      "upma powder",
+      "semiya upma mix"
+    ]
+  },
+  {
+    "objectID": "syn-69c2940bf5531618d54d1f12-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "table & chair",
+      "dining set",
+      "table chair set",
+      "furniture set",
+      "dining furniture",
+      "table with chairs",
+      "seating set",
+      "dinette set",
+      "table chair combo",
+      "furniture combo",
+      "dining table chair",
+      "table with chair",
+      "table chair pair"
+    ]
+  },
+  {
+    "objectID": "syn-69c2940bf5531618d54d1f12-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "meja aur kursi",
+    "synonyms": [
+      "table & chair"
+    ]
+  },
+  {
+    "objectID": "syn-69c2940bf5531618d54d1f12-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "meja kursi",
+    "synonyms": [
+      "table & chair"
+    ]
+  },
+  {
+    "objectID": "syn-69c2940cf5531618d54d1f13-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "table tennis ball",
+      "ping pong ball",
+      "table tennis balls",
+      "TT ball",
+      "table tennis ball set",
+      "practice balls",
+      "tournament balls",
+      "white balls",
+      "orange balls",
+      "table tennis equipment",
+      "TT balls",
+      "tt ball",
+      "ping pong balls",
+      "badminton ball",
+      "white ball",
+      "orange ball",
+      "3 star ball",
+      "plastic ball"
+    ]
+  },
+  {
+    "objectID": "syn-69c2940cf5531618d54d1f14-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "table tennis bat",
+      "table tennis paddle",
+      "ping pong paddle",
+      "TT paddle",
+      "TT bat",
+      "table tennis racket",
+      "paddle",
+      "bat",
+      "table tennis equipment",
+      "pingpong bat",
+      "professional paddle",
+      "ping pong bat",
+      "table tennis racquet",
+      "tt bat",
+      "badminton racket",
+      "sports bat",
+      "wooden bat",
+      "carbon bat",
+      "composite bat"
+    ]
+  },
+  {
+    "objectID": "syn-69c2940cf5531618d54d1f15-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "table tennis racket",
+      "table tennis bat",
+      "ping pong racket",
+      "TT racket",
+      "table tennis paddle",
+      "professional racket",
+      "beginner racket",
+      "training racket",
+      "competition racket",
+      "sports racket",
+      "pingpong racket",
+      "table tennis racquet",
+      "tt racket",
+      "badminton racket",
+      "carbon racket"
+    ]
+  },
+  {
+    "objectID": "syn-69c2940cf5531618d54d1f16-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "table tennis set",
+      "table tennis kit",
+      "ping pong set",
+      "TT set",
+      "table tennis equipment set",
+      "complete table tennis set",
+      "beginner set",
+      "professional set",
+      "portable table tennis set",
+      "indoor games set",
+      "table tennis combo",
+      "table tennis complete set",
+      "tt set",
+      "table tennis package",
+      "portable table tennis",
+      "mini table tennis",
+      "indoor sports set"
+    ]
+  },
+  {
+    "objectID": "syn-69c29444f5531618d54d1f18-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "supplement",
+      "kids supplement",
+      "nutritional supplement",
+      "vitamin supplement",
+      "tonic",
+      "health supplement"
+    ]
+  },
+  {
+    "objectID": "syn-69c29444f5531618d54d1f19-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "surface cleaner",
+      "disinfectant cleaner",
+      "multipurpose cleaner",
+      "surface spray",
+      "cleaning spray",
+      "disinfectant spray"
+    ]
+  },
+  {
+    "objectID": "syn-69c29444f5531618d54d1f1a-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "swaddle",
+      "swaddle wrap",
+      "baby swaddle",
+      "swaddling blanket",
+      "baby wrap",
+      "swaddling cloth"
+    ]
+  },
+  {
+    "objectID": "syn-69c29444f5531618d54d1f1b-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "sweater",
+      "kids sweater",
+      "baby sweater",
+      "pullover",
+      "jumper",
+      "woolen sweater"
+    ]
+  },
+  {
+    "objectID": "syn-69c2970ef5531618d54d1f26-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "table tennis trainer",
+      "ping pong trainer",
+      "table tennis practice device",
+      "ping pong ball launcher",
+      "table tennis ball machine",
+      "table tennis robot",
+      "TT trainer"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a61ff5531618d54d1f46-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "lunch box",
+      "tiffin box",
+      "food container",
+      "lunch container",
+      "meal box",
+      "tiffin carrier",
+      "tiffin"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a61ff5531618d54d1f46-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "dabba",
+    "synonyms": [
+      "lunch box"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a630f5531618d54d1f47-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "vest",
+      "baby vest",
+      "sleeveless vest",
+      "cotton vest",
+      "undershirt"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a630f5531618d54d1f47-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "baniyan",
+    "synonyms": [
+      "vest"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a630f5531618d54d1f47-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "banian",
+    "synonyms": [
+      "vest"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a630f5531618d54d1f47-oneway-2",
+    "type": "oneWaySynonym",
+    "input": "ganji",
+    "synonyms": [
+      "vest"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a654f5531618d54d1f48-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "slippers",
+      "flip flops",
+      "house slippers",
+      "indoor slippers",
+      "slides",
+      "sandals"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a654f5531618d54d1f48-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "chappal",
+    "synonyms": [
+      "slippers"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a654f5531618d54d1f48-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "chappals",
+    "synonyms": [
+      "slippers"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a654f5531618d54d1f48-oneway-2",
+    "type": "oneWaySynonym",
+    "input": "hawai chappal",
+    "synonyms": [
+      "slippers"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a6a8f5531618d54d1f49-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "car",
+      "toy car",
+      "kids car",
+      "ride-on car",
+      "pedal car",
+      "battery car",
+      "car toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a6a8f5531618d54d1f49-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "gaadi",
+    "synonyms": [
+      "car"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a6b3f5531618d54d1f4a-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "crocs",
+      "crocs shoes",
+      "crocs clogs",
+      "foam clogs",
+      "crocs sandals",
+      "clogs"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a6b3f5531618d54d1f4a-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "crocs sandal",
+    "synonyms": [
+      "crocs"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a991f5531618d54d1f51-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "milk",
+      "baby milk",
+      "infant formula",
+      "formula milk",
+      "powdered milk",
+      "milk powder"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a991f5531618d54d1f51-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "doodh",
+    "synonyms": [
+      "milk"
+    ]
+  },
+  {
+    "objectID": "syn-69c2a991f5531618d54d1f51-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "paal",
+    "synonyms": [
+      "milk"
+    ]
+  },
+  {
+    "objectID": "syn-69c2ab04f5531618d54d1f5b-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "moza",
+      "baby teether",
+      "teething ring",
+      "socks"
+    ]
+  },
+  {
+    "objectID": "syn-69c2ab04f5531618d54d1f5b-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "mozha",
+    "synonyms": [
+      "moza"
+    ]
+  },
+  {
+    "objectID": "syn-69c2ab04f5531618d54d1f5b-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "mozze",
+    "synonyms": [
+      "moza"
+    ]
+  },
+  {
+    "objectID": "syn-69c2ae04f5531618d54d1f67-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "chashma",
+      "glasses",
+      "spectacles",
+      "kids glasses",
+      "prescription glasses",
+      "power glasses"
+    ]
+  },
+  {
+    "objectID": "syn-69c2ae04f5531618d54d1f67-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "eyeglasses",
+    "synonyms": [
+      "chashma"
+    ]
+  },
+  {
+    "objectID": "syn-69c2af0af5531618d54d1f6e-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "milk bottle",
+      "feeding bottle",
+      "baby bottle",
+      "nursing bottle",
+      "formula bottle",
+      "doodh bottle"
+    ]
+  },
+  {
+    "objectID": "syn-69c2af21f5531618d54d1f6f-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "pichkari",
+      "water gun",
+      "water pistol",
+      "spray gun",
+      "water blaster",
+      "water shooter",
+      "holi water gun"
+    ]
+  },
+  {
+    "objectID": "syn-69c2af88f5531618d54d1f71-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "tel",
+      "phone toy",
+      "toy telephone",
+      "tel oil",
+      "hair tel",
+      "coconut tel"
+    ]
+  },
+  {
+    "objectID": "syn-69c2af88f5531618d54d1f71-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "telephone",
+    "synonyms": [
+      "tel"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2003-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bottle nipple",
+      "feeding bottle teat",
+      "bottle teat",
+      "doodh bottle ka nipple"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2004-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bottle sterilizer",
+      "electric sterilizer",
+      "UV sterilizer",
+      "bottle sanitizer",
+      "doodh bottle sterilizer"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2005-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bottle warmer",
+      "milk bottle warmer",
+      "electric bottle warmer",
+      "doodh bottle warmer",
+      "bottle garam karne wali"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2006-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bounce ball",
+      "bouncy ball",
+      "rubber ball",
+      "dum ball"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2007-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bowl",
+      "baby bowl",
+      "feeding bowl"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2007-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "katori",
+    "synonyms": [
+      "bowl"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2007-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "pyali",
+    "synonyms": [
+      "bowl"
+    ]
+  },
+  {
+    "objectID": "syn-69c2e2b7f5531618d54d2008-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "boyshorts",
+      "boy shorts",
+      "boxer shorts",
+      "shorts"
+    ]
+  },
+  {
+    "objectID": "syn-69c37638f5531618d54d20ec-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "spoon",
+      "baby spoon",
+      "feeding spoon",
+      "toddler spoon",
+      "kids spoon"
+    ]
+  },
+  {
+    "objectID": "syn-69c37638f5531618d54d20ec-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "chammach",
+    "synonyms": [
+      "spoon"
+    ]
+  },
+  {
+    "objectID": "syn-69c37638f5531618d54d20ec-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "chamach",
+    "synonyms": [
+      "spoon"
+    ]
+  },
+  {
+    "objectID": "syn-69c37638f5531618d54d20ec-oneway-2",
+    "type": "oneWaySynonym",
+    "input": "chamcha",
+    "synonyms": [
+      "spoon"
+    ]
+  },
+  {
+    "objectID": "syn-69c37638f5531618d54d20ed-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "spread",
+      "fruit spread",
+      "bread spread",
+      "jam",
+      "chocolate spread"
+    ]
+  },
+  {
+    "objectID": "syn-69c37638f5531618d54d20ee-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "stacking toy",
+      "stacking rings",
+      "stacker toy",
+      "ring stacker",
+      "nesting toy",
+      "ring toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2116-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bra",
+      "undergarment",
+      "chest support",
+      "innerwear",
+      "bust support"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2116-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "brassiere",
+    "synonyms": [
+      "bra"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2117-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bracelet",
+      "wrist bracelet",
+      "bangle",
+      "wrist band"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2117-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "kangan",
+    "synonyms": [
+      "bracelet"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2117-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "churi",
+    "synonyms": [
+      "bracelet"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2118-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "breast pump",
+      "manual breast pump",
+      "electric breast pump",
+      "milk pump",
+      "feeding pump"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2119-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "briefs",
+      "underwear",
+      "shorts",
+      "innerwear",
+      "trunks"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d2119-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "underpants",
+    "synonyms": [
+      "briefs"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ef5531618d54d211a-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "brush pen",
+      "brush marker",
+      "calligraphy pen",
+      "art brush pen"
+    ]
+  },
+  {
+    "objectID": "syn-69c37f3ff5531618d54d211b-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "bubble bath",
+      "bubble wash",
+      "bath foam",
+      "bubble liquid",
+      "bubble bath liquid",
+      "bathing foam"
+    ]
+  },
+  {
+    "objectID": "syn-69c832bff5531618d54d610c-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "musical toy phone",
+      "toy mobile phone",
+      "toy phone",
+      "baby toy phone",
+      "kids mobile toy",
+      "toy mobile",
+      "bachon ka phone",
+      "musical mobile"
+    ]
+  },
+  {
+    "objectID": "syn-69c832bff5531618d54d610d-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "musical wand toy",
+      "magic wand toy",
+      "fairy wand toy",
+      "musical fairy wand",
+      "light up wand",
+      "magic wand",
+      "musical stick"
+    ]
+  },
+  {
+    "objectID": "syn-69c832bff5531618d54d610d-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "pari danda",
+    "synonyms": [
+      "musical wand toy"
+    ]
+  },
+  {
+    "objectID": "syn-69c832bff5531618d54d610e-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "muslin cloth",
+      "muslin swaddle",
+      "baby muslin cloth",
+      "muslin square",
+      "muslin wrap",
+      "malmal cloth",
+      "mulmul cloth"
+    ]
+  },
+  {
+    "objectID": "syn-69c832bff5531618d54d610e-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "mulmul",
+    "synonyms": [
+      "muslin cloth"
+    ]
+  },
+  {
+    "objectID": "syn-69c832bff5531618d54d610f-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "nail art kit",
+      "kids nail kit",
+      "nail polish kit",
+      "nail decoration kit",
+      "manicure toy set",
+      "nail paint set",
+      "nail manicure kit"
+    ]
+  },
+  {
+    "objectID": "syn-69c832bff5531618d54d6110-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "nail clippers",
+      "nail cutter",
+      "baby nail cutter",
+      "baby nail trimmer",
+      "infant nail clipper",
+      "nahun cutter",
+      "baccha nail cutter"
+    ]
+  },
+  {
+    "objectID": "syn-69c832c0f5531618d54d6111-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "nail sticker",
+      "nail decals",
+      "nail art stickers",
+      "fingernail stickers",
+      "kids nail stickers",
+      "fake nail stickers",
+      "nail decoration stickers"
+    ]
+  },
+  {
+    "objectID": "syn-69c9ead9f5531618d54d63ce-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "banyan",
+      "vest",
+      "undershirt",
+      "innerwear vest",
+      "sleeveless vest"
+    ]
+  },
+  {
+    "objectID": "syn-69c9ead9f5531618d54d63ce-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "ganji",
+    "synonyms": [
+      "banyan"
+    ]
+  },
+  {
+    "objectID": "syn-69c9ead9f5531618d54d63ce-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "baniyan",
+    "synonyms": [
+      "banyan"
+    ]
+  },
+  {
+    "objectID": "syn-69c9ead9f5531618d54d63ce-oneway-2",
+    "type": "oneWaySynonym",
+    "input": "banian",
+    "synonyms": [
+      "banyan"
+    ]
+  },
+  {
+    "objectID": "syn-69c9ead9f5531618d54d63ce-oneway-3",
+    "type": "oneWaySynonym",
+    "input": "sandow baniyan",
+    "synonyms": [
+      "banyan"
+    ]
+  },
+  {
+    "objectID": "syn-69ca6a12f5531618d54d654c-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "maate",
+      "maate baby care",
+      "maate skincare",
+      "maate baby products",
+      "maate baby"
+    ]
+  },
+  {
+    "objectID": "syn-69ca6a12f5531618d54d654c-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "mitti",
+    "synonyms": [
+      "maate"
+    ]
+  },
+  {
+    "objectID": "syn-69ca6a12f5531618d54d654c-oneway-1",
+    "type": "oneWaySynonym",
+    "input": "maati",
+    "synonyms": [
+      "maate"
+    ]
+  },
+  {
+    "objectID": "syn-69ca6a57f5531618d54d654d-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "rabbit",
+      "bunny",
+      "rabbit toy",
+      "bunny toy",
+      "soft toy rabbit",
+      "stuffed rabbit",
+      "stuffed bunny",
+      "khargosh toy"
+    ]
+  },
+  {
+    "objectID": "syn-69ca6a57f5531618d54d654d-oneway-0",
+    "type": "oneWaySynonym",
+    "input": "khargosh",
+    "synonyms": [
+      "rabbit"
+    ]
+  },
+  {
+    "objectID": "syn-69ca6ad3f5531618d54d6551-twoway",
+    "type": "synonym",
+    "synonyms": [
+      "tether",
+      "safety leash",
+      "walking harness",
+      "toddler leash",
+      "anti lost strap",
+      "baby harness",
+      "teether",
+      "teething toy",
+      "teething ring"
+    ]
+  }
+]
