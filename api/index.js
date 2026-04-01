@@ -828,7 +828,7 @@ app.post('/api/sync-algolia', async (req, res) => {
 
         const client = algoliasearch(appId, apiKey);
 
-        const PRODUCT_INDEX = process.env.ALGOLIA_INDEX_NAME || 'products-poc';
+        const PRODUCT_INDEX = process.env.ALGOLIA_PRODUCT_INDEX || 'products-poc';
         const MATCH_THRESHOLD = 0;
         
         console.log(`Preparing dynamic synonym classification against ${PRODUCT_INDEX}...`);
@@ -928,7 +928,7 @@ app.post('/api/sync-algolia', async (req, res) => {
                 await client.saveSynonyms({
                     indexName: PRODUCT_INDEX,
                     synonymHit: chunk,
-                    replaceExistingSynonyms: false
+                    replaceExistingSynonyms: true
                 });
             }
         }
