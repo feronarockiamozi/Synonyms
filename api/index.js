@@ -651,6 +651,19 @@ app.post('/api/approve', async (req, res) => {
     }
 });
 
+// Bulk Approve All Drafts
+app.post('/api/approve-all', async (req, res) => {
+    try {
+        const result = await Cluster.updateMany(
+            { status: 'draft' },
+            { $set: { status: 'approved', updated_at: Date.now() } }
+        );
+        res.json({ success: true, count: result.modifiedCount });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Create Job for Custom or Index
 app.post('/api/jobs', async (req, res) => {
     const { type, terms, model } = req.body;

@@ -775,6 +775,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
     });
 
+    const btnApproveAll = document.getElementById('btn-approve-all');
+    if (btnApproveAll) {
+        btnApproveAll.addEventListener('click', async () => {
+            if (!draftsData.length) return;
+            const conf = confirm(`Are you sure you want to approve ALL ${draftsData.length} draft clusters?`);
+            if (!conf) return;
+
+            btnApproveAll.disabled = true;
+            const originalHtml = btnApproveAll.innerHTML;
+            btnApproveAll.innerHTML = 'Approving...';
+
+            try {
+                const res = await fetch('/api/approve-all', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Successfully approved ${data.count} clusters`, 'success');
+                    draftsData = [];
+                    renderDrafts([]);
+                    updateMetrics();
+                } else {
+                    showToast('Approval failed: ' + data.error, 'error');
+                }
+            } catch (e) {
+                showToast('Network error during bulk approval.', 'error');
+            } finally {
+                btnApproveAll.disabled = false;
+                btnApproveAll.innerHTML = originalHtml;
+            }
+        });
+    }
+
 
     // ─── HISTORY ───────────────────────────────────────────
     async function loadHistory() {
