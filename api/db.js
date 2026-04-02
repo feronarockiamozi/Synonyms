@@ -95,6 +95,7 @@ const JobSchema = new mongoose.Schema({
     type: String,
     mode: String,
     model: String,
+    promptProfile: { type: String, enum: ['ptype', 'brand'], default: 'ptype' },
     terms: { type: [String], default: [] },
     created_at: { type: Date, default: Date.now, expires: 3600 } // Auto-delete in 1 hr
 });

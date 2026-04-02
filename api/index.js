@@ -426,6 +426,9 @@ Output:
 ]
 }
 
+]
+}
+
 ---
 
 Example 4
@@ -440,7 +443,55 @@ Output:
 "product_type": "feeding bottle",
 "regional_variations": [
 "doodh bottle",
-"paal bottle
+"paal bottle"
+]
+}`;
+
+const brandSynonymsPrompt = `You generate **brand and generic name variations for an ecommerce search engine**.
+
+Domain: **pharmacy, health, baby, kids, and family products in India**.
+
+The goal is to identify **common naming permutations, generic equivalents, and spelling variations** users might search for instead of the exact brand name.
+
+Return **ONLY valid JSON**.
+
+---
+
+# TASK
+
+Given a **Brand Name or Generic/Chemical Name**, generate alternate names that refer to the exact same product.
+
+A synonym must be:
+- The common chemical/generic name for that brand.
+- Common misspellings (e.g. cetzine -> cetrizine).
+- Shorthand names.
+
+Return **3-6 synonyms maximum**.
+
+# OUTPUT FORMAT
+
+{
+"product_type": "input term",
+"synonyms": [
+"synonym 1",
+"synonym 2"
+]
+}`;
+
+const brandRegionalPrompt = `You generate **colloquial or regional variations for brand names** in Indian ecommerce.
+
+Domain: **pharmacy, health, baby, kids, and family products in India**.
+
+The goal is to identify **highly localized, slang, or heavily localized mispronunciations** of brand names and medicines. If no commonly used regional variations exist, return an empty list.
+
+Return **ONLY valid JSON**.
+
+# OUTPUT FORMAT
+
+{
+"product_type": "input term",
+"regional_variations": [
+"variation 1"
 ]
 }`;
 
@@ -666,7 +717,7 @@ app.post('/api/approve-all', async (req, res) => {
 
 // Create Job for Custom or Index
 app.post('/api/jobs', async (req, res) => {
-    const { type, terms, model } = req.body;
+    const { type, terms, model, promptProfile } = req.body;
     const jobId = Date.now().toString() + Math.random().toString().substring(2, 6);
 
     try {
@@ -675,7 +726,8 @@ app.post('/api/jobs', async (req, res) => {
             type,
             terms: terms || [],
             mode: type === 'index' ? 'catalog' : 'custom',
-            model: model || 'claude'
+            model: model || 'claude',
+            promptProfile: promptProfile || 'ptype'
         });
         res.json({ jobId });
     } catch (e) {
@@ -775,9 +827,11 @@ app.get('/api/jobs/:id/stream', async (req, res) => {
 
             try {
                 const processor = job.model === 'gemini' ? callGeminiBatch : callClaudeBatch;
+                const pSyn = job.promptProfile === 'brand' ? brandSynonymsPrompt : synonymsPrompt;
+                const pReg = job.promptProfile === 'brand' ? brandRegionalPrompt : regionalPrompt;
                 const [synResult, regResult] = await Promise.all([
-                    processor(batch, synonymsPrompt, 'synonyms'),
-                    processor(batch, regionalPrompt, 'regional_variations'),
+                    processor(batch, pSyn, 'synonyms'),
+                    processor(batch, pReg, 'regional_variations'),
                 ]);
 
                 if (isAborted) break;

@@ -300,10 +300,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const activeModel = document.querySelector('input[name="llm-model"]:checked').value;
+            const promptProfile = document.querySelector('input[name="prompt-profile"]:checked').value;
+            
             const res = await fetch('/api/jobs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: 'custom', terms, model: activeModel }),
+                body: JSON.stringify({ type: 'custom', terms, model: activeModel, promptProfile }),
             });
             const data = await res.json();
             if (data.jobId) {

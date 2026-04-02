@@ -176,12 +176,22 @@
                     <button class="glass-badge-link" onclick="window._switchToSettings()">Change</button>
                 </div>
 
-                <div class="chat-prompt-box">
-                    <div class="input-header" style="padding: 1.25rem 1.25rem 0.5rem 1.25rem;">
-                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">Target Product
-                            Types</label>
-                    </div>
-                    <textarea id="custom-terms" placeholder="Enter terms..."></textarea>
+                    <div class="chat-prompt-box">
+                        <div class="input-header" style="padding: 1.25rem 1.25rem 0.5rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+                            <label id="custom-terms-label" style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">Target Product Types</label>
+                            
+                            <div class="prompt-profile-toggle" style="display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 6px; border: 1px solid var(--border);">
+                                <label style="font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px;">
+                                    <input type="radio" name="prompt-profile" value="ptype" checked style="accent-color: var(--primary); margin:0;">
+                                    📦 Product Types
+                                </label>
+                                <label style="font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px;">
+                                    <input type="radio" name="prompt-profile" value="brand" style="accent-color: var(--primary); margin:0;">
+                                    🏷️ Brands & Names
+                                </label>
+                            </div>
+                        </div>
+                        <textarea id="custom-terms" placeholder="Enter terms..."></textarea>
 
                     <div class="prompt-toolbar">
                         <div class="file-upload-wrapper" title="Attach .TXT file">
